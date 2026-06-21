@@ -1,10 +1,7 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 param([string]$TunName="happ-default-tun",[string]$TunMtu="1380",[string]$ExpectedIp="")
 $ErrorActionPreference="Continue"
 $script:CFG=@{TunName=$TunName;TunMtu=$TunMtu;ExpectedIp=$ExpectedIp;Lang="EN"}
-
-# Load Russian strings from embedded JSON
-$ruJson = Get-Content -Path "$PSScriptRoot\NoLeaks-ru.json" -Raw -Encoding UTF8 | ConvertFrom-Json
 
 $script:STR=@{
     EN=@{
@@ -33,58 +30,58 @@ $script:STR=@{
     }
     RU=@{
         title="Windows 11 No-Leaks"
-        subtitle=$ruJson.subtitle
+        subtitle="ZaSHCHita ot uTechek IP i nastroika seti"
         version="v3.0"
-        lang_select=$ruJson.lang_select
-        menu_header=$ruJson.menu_header
-        menu_run_all=$ruJson.menu_run_all
-        menu_settings=$ruJson.menu_settings
-        menu_quit=$ruJson.menu_quit
-        phase=$ruJson.phase
-        desc=$ruJson.desc
-        status=$ruJson.status
+        lang_select="VYBERITE YAZYK:"
+        menu_header="GLAVNOE MENYU"
+        menu_run_all="Zapustit vse fazy"
+        menu_settings="Nastroiki"
+        menu_quit="Vyhod"
+        phase="Faza"
+        desc="Opisanie"
+        status="Status"
         notrun="----"
-        running=$ruJson.running
-        done=$ruJson.done
-        failed=$ruJson.failed
-        warn=$ruJson.warn
-        reboot=$ruJson.reboot
-        admin_warn=$ruJson.admin_warn
-        admin_ok=$ruJson.admin_ok
-        admin_no=$ruJson.admin_no
-        settings=$ruJson.settings
-        current=$ruJson.current
-        enter_tun=$ruJson.enter_tun
-        enter_mtu=$ruJson.enter_mtu
-        enter_ip=$ruJson.enter_ip
-        saved=$ruJson.saved
-        confirm_all=$ruJson.confirm_all
-        yes_no=$ruJson.yes_no
-        summary=$ruJson.summary
-        total_pass=$ruJson.total_pass
-        total_fail=$ruJson.total_fail
-        total_warn=$ruJson.total_warn
-        reboot_now=$ruJson.reboot_now
-        reboot_1=$ruJson.reboot_1
-        reboot_2=$ruJson.reboot_2
-        press_key=$ruJson.press_key
-        p1_name=$ruJson.p1_name
-        p1_desc=$ruJson.p1_desc
-        p2_name=$ruJson.p2_name
-        p2_desc=$ruJson.p2_desc
-        p3_name=$ruJson.p3_name
-        p3_desc=$ruJson.p3_desc
-        p4_name=$ruJson.p4_name
-        p4_desc=$ruJson.p4_desc
-        p5_name=$ruJson.p5_name
-        p5_desc=$ruJson.p5_desc
-        p6_name=$ruJson.p6_name
-        p6_desc=$ruJson.p6_desc
-        p7_name=$ruJson.p7_name
-        p7_desc=$ruJson.p7_desc
-        nav_hint=$ruJson.nav_hint
-        selected=$ruJson.selected
-        phase_hint=$ruJson.phase_hint
+        running="VYP..."
+        done="GOTOVO"
+        failed="OSHIBKA"
+        warn="VNIMANIE"
+        reboot="*** NUGNA PEREZAGRUZKA ***"
+        admin_warn="Zapustite ot imeni Administratora!"
+        admin_ok="Administrator: DA"
+        admin_no="Administrator: NET (ogranicheno)"
+        settings="NASTROYKI"
+        current="Tekuschee"
+        enter_tun="Imya TUN-adaptera"
+        enter_mtu="Znachenie MTU"
+        enter_ip="Ozhidaemyi IP (neobyazatelno)"
+        saved="Nastroiki sokhranyes!"
+        confirm_all="Zapustit VSE fazy?"
+        yes_no=" (1=Da / 2=Net)"
+        summary="ITOGI"
+        total_pass="Vsego PASS"
+        total_fail="Vsego FAIL"
+        total_warn="Vsego WARN"
+        reboot_now="Perezagruzit seychas?"
+        reboot_1="1. Da, perezaruzit"
+        reboot_2="2. Net, pozzhe"
+        press_key="Nazhmite lyubuyu klavishu..."
+        p1_name="Blokirovka WebRTC/STUN/TURN"
+        p1_desc="Pravila firewall, LLMNR/NBT-NS off"
+        p2_name="Otklyuchenie QUIC"
+        p2_desc="msquic, HTTP/3, politiki brauzerov"
+        p3_name="Otklyuchenie IPv6"
+        p3_desc="Bindingi, tunneli, DisabledComponents"
+        p4_name="Optimizaciya TCP steka"
+        p4_desc="TTL=128, Fast Open/ECN off, Nagle off"
+        p5_name="Telemetriya i sluzhby"
+        p5_desc="DiagTrack, SSDP, mDNS, blokirovka hosts"
+        p6_name="Watcher MTU"
+        p6_desc="Podderzhivaet MTU + IPv6 off na TUN"
+        p7_name="Finalnyi audit"
+        p7_desc="17 kategorii proverok utechek"
+        nav_hint="VERH/NAIZ = vibor | ENTER = zapusk | A = Vse | S = Nastroiki | Q = Vyhod"
+        selected="VYBRANO"
+        phase_hint="Nazhmite ENTER dlya zapuska"
     }
 }
 
@@ -119,49 +116,36 @@ function Draw-Screen {
     if(Is-Admin){Write-Host ("  "+(STR "admin_ok")) -ForegroundColor Green}else{Write-Host ("  "+(STR "admin_no")) -ForegroundColor Yellow}
     Write-Host ("  TUN: "+$script:CFG.TunName+" | MTU: "+$script:CFG.TunMtu) -ForegroundColor DarkGray
     Write-Host ""
-    Write-Host ("  {0,-3} {1,-28} {2,-28} {3}" -f "#",(STR "phase"),(STR "desc"),(STR "status")) -ForegroundColor DarkGray
+    Write-Host ("  {0,-2} {1,-30} {2,-30} {3}" -f "#",(STR "phase"),(STR "desc"),(STR "status")) -ForegroundColor DarkGray
     Write-Host ("  "+("-"*70)) -ForegroundColor DarkGray
     for($i=0;$i -lt 7;$i++){
-        $pName=STR ("p$($i+1)_name")
-        $pDesc=STR ("p$($i+1)_desc")
+        $pName=STR ("p$($i+1)_name");$pDesc=STR ("p$($i+1)_desc")
         $icon=Get-PhaseIcon $script:PhaseStatus[$i]
-        $num=($i+1).ToString()
-        $cursor=if($script:MenuIndex -eq $i){">"}else{" "}
+        $cursor=if($script:MenuIndex -eq $i){"->"}else{"  "}
         if($script:MenuIndex -eq $i){
-            Write-Host ("  {0}{1}. {2,-28} "-f$cursor,$num,$pName) -NoNewline -ForegroundColor Cyan -BackgroundColor DarkBlue
-            Write-Host ("{0,-28} "-f$pDesc) -NoNewline -ForegroundColor White -BackgroundColor DarkBlue
-            Write-Host ("[{0}]"-f$icon.Icon) -ForegroundColor $icon.Color -BackgroundColor DarkBlue
+            Write-Host ("  {0} {1,-30} "-f$cursor,$pName) -NoNewline -ForegroundColor Black -BackgroundColor Cyan
+            Write-Host ("{0,-30} "-f$pDesc) -NoNewline -ForegroundColor Black -BackgroundColor Cyan
+            Write-Host ("[{0}]"-f$icon.Icon) -ForegroundColor $icon.Color -BackgroundColor Cyan
         } else {
-            Write-Host ("  {0}{1}. {2,-28} {3,-28} [{4}]" -f$cursor,$num,$pName,$pDesc,$icon.Icon) -ForegroundColor Gray
+            Write-Host ("  {0} {1,-30} {2,-30} [{3}]" -f$cursor,$pName,$pDesc,$icon.Icon) -ForegroundColor Gray
         }
     }
     Write-Host ("  "+("-"*70)) -ForegroundColor DarkGray
-    $items=@("A","S","Q")
-    $labels=@((STR "menu_run_all"),(STR "menu_settings"),(STR "menu_quit"))
+    $menuItems=@("A:"+(STR "menu_run_all"),"S:"+(STR "menu_settings"),"Q:"+(STR "menu_quit"))
     for($j=0;$j -lt 3;$j++){
-        $idx=$j+7
-        $cursor=if($script:MenuIndex -eq $idx){">"}else{" "}
+        $idx=$j+7;$cursor=if($script:MenuIndex -eq $idx){"->"}else{"  "}
         if($script:MenuIndex -eq $idx){
-            Write-Host ("  {0} [{1}] {2}" -f$cursor,$items[$j],$labels[$j]) -ForegroundColor Cyan -BackgroundColor DarkBlue
+            Write-Host ("  {0} [{1}]" -f$cursor,$menuItems[$j]) -ForegroundColor Black -BackgroundColor Cyan
         } else {
-            Write-Host ("  {0} [{1}] {2}" -f$cursor,$items[$j],$labels[$j]) -ForegroundColor White
+            Write-Host ("  {0} [{1}]" -f$cursor,$menuItems[$j]) -ForegroundColor White
         }
     }
     Write-Host ""
     Write-Host ("  "+(STR "nav_hint")) -ForegroundColor DarkCyan
     Write-Host ""
     if($script:MenuIndex -lt 7){
-        $pName=STR ("p$($script:MenuIndex+1)_name")
-        $pDesc=STR ("p$($script:MenuIndex+1)_desc")
-        Write-Host ("  >> "+(STR "selected")+": $pName") -ForegroundColor Yellow
-        Write-Host ("     $pDesc") -ForegroundColor Gray
-        Write-Host ("     "+(STR "phase_hint")) -ForegroundColor DarkGray
-    } elseif($script:MenuIndex -eq 7){
-        Write-Host ("  >> "+(STR "selected")+": "+(STR "menu_run_all")) -ForegroundColor Yellow
-    } elseif($script:MenuIndex -eq 8){
-        Write-Host ("  >> "+(STR "selected")+": "+(STR "menu_settings")) -ForegroundColor Yellow
-    } else {
-        Write-Host ("  >> "+(STR "selected")+": "+(STR "menu_quit")) -ForegroundColor Yellow
+        Write-Host ("  >> "+(STR "selected")+": "+(STR ("p$($script:MenuIndex+1)_name"))) -ForegroundColor Yellow
+        Write-Host ("     "+(STR ("p$($script:MenuIndex+1)_desc"))) -ForegroundColor Gray
     }
 }
 
@@ -172,17 +156,19 @@ function Invoke-PhaseEngine {
         1 {
             Get-NetFirewallProfile|ForEach-Object{if(!$_.Enabled){Set-NetFirewallProfile -Name $_.Name -Enabled True|Out-Null};$results+=@{Name="Firewall $($_.Name)";Status="PASS"}}
             $rules=@(@("Block STUN UDP 3478 Out","UDP",3478,"Outbound"),@("Block STUN TCP 3478 Out","TCP",3478,"Outbound"),@("Block TURN TCP 5349 Out","TCP",5349,"Outbound"),@("Block mDNS UDP 5353 Out","UDP",5353,"Outbound"),@("Block QUIC UDP 443 Out","UDP",443,"Outbound"),@("Block SSDP UDP 1900 Out","UDP",1900,"Outbound"),@("Block LLMNR UDP 5355 Out","UDP",5355,"Outbound"))
-            foreach($r in $rules){$existing=Get-NetFirewallRule -DisplayName $r[0] -ErrorAction SilentlyContinue;if($existing){Remove-NetFirewallRule -DisplayName $r[0]|Out-Null};New-NetFirewallRule -DisplayName $r[0] -Direction $r[3] -Protocol $r[1] -LocalPort $r[2] -Action Block -Profile Any -Enabled True|Out-Null;$results+=@{Name="Rule: $($r[0])";Status="PASS"}}
-            $llmnrPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient";if(!(Test-Path $llmnrPath)){New-Item -Path $llmnrPath -Force|Out-Null};Set-ItemProperty -Path $llmnrPath -Name "EnableMulticast" -Value 0 -Type DWord;$results+=@{Name="LLMNR disabled";Status="PASS"}
-            $adapters=Get-WmiObject Win32_NetworkAdapterConfiguration -ErrorAction SilentlyContinue|Where-Object{$_.IPEnabled};foreach($a in $adapters){$a.SetTcpipNetbios(2)|Out-Null};$results+=@{Name="NBT-NS disabled";Status="PASS"}
+            foreach($r in $rules){$e=Get-NetFirewallRule -DisplayName $r[0] -ErrorAction SilentlyContinue;if($e){Remove-NetFirewallRule -DisplayName $r[0]|Out-Null};New-NetFirewallRule -DisplayName $r[0] -Direction $r[3] -Protocol $r[1] -LocalPort $r[2] -Action Block -Profile Any -Enabled True|Out-Null;$results+=@{Name="Rule: $($r[0])";Status="PASS"}}
+            $p="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "EnableMulticast" -Value 0 -Type DWord;$results+=@{Name="LLMNR off";Status="PASS"}
+            Get-WmiObject Win32_NetworkAdapterConfiguration -ErrorAction SilentlyContinue|Where-Object{$_.IPEnabled}|ForEach-Object{$_.SetTcpipNetbios(2)|Out-Null};$results+=@{Name="NBT-NS off";Status="PASS"}
         }
         2 {
-            $svc=Get-Service -Name msquic -ErrorAction SilentlyContinue;if($svc){Stop-Service msquic -Force -ErrorAction SilentlyContinue;Set-Service msquic -StartupType Disabled};Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MsQuic" -Name "Start" -Value 4 -ErrorAction SilentlyContinue;$results+=@{Name="msquic service";Status="PASS"}
-            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters" -Name "EnableHttp3" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="HTTP/3 (HTTP.sys)";Status="PASS"}
-            $sqPath="HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\QUIC";if(!(Test-Path $sqPath)){New-Item -Path $sqPath -Force|Out-Null};Set-ItemProperty -Path $sqPath -Name "Enabled" -Value 0 -Type DWord;Set-ItemProperty -Path $sqPath -Name "DisabledByDefault" -Value 1 -Type DWord;$results+=@{Name="QUIC Schannel";Status="PASS"}
-            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "EnableQuic" -Value 0 -Type DWord -ErrorAction SilentlyContinue;Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "EnableQuic" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="WinINET QUIC";Status="PASS"}
-            $chromePath="HKLM:\SOFTWARE\Policies\Google\Chrome";if(!(Test-Path $chromePath)){New-Item -Path $chromePath -Force|Out-Null};Set-ItemProperty -Path $chromePath -Name "QuicAllowed" -Value 0 -Type DWord;$results+=@{Name="Chrome QUIC";Status="PASS"}
-            $edgePath="HKLM:\SOFTWARE\Policies\Microsoft\Edge";if(!(Test-Path $edgePath)){New-Item -Path $edgePath -Force|Out-Null};Set-ItemProperty -Path $edgePath -Name "QuicAllowed" -Value 0 -Type DWord;$results+=@{Name="Edge QUIC";Status="PASS"}
+            $svc=Get-Service -Name msquic -ErrorAction SilentlyContinue;if($svc){Stop-Service msquic -Force -ErrorAction SilentlyContinue;Set-Service msquic -StartupType Disabled}
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\MsQuic" -Name "Start" -Value 4 -ErrorAction SilentlyContinue;$results+=@{Name="msquic";Status="PASS"}
+            Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\HTTP\Parameters" -Name "EnableHttp3" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="HTTP/3";Status="PASS"}
+            $p="HKLM:\SYSTEM\CurrentControlSet\Control\SecurityProviders\SCHANNEL\Protocols\QUIC";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "Enabled" -Value 0 -Type DWord;Set-ItemProperty -Path $p -Name "DisabledByDefault" -Value 1 -Type DWord;$results+=@{Name="QUIC Schannel";Status="PASS"}
+            Set-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "EnableQuic" -Value 0 -Type DWord -ErrorAction SilentlyContinue
+            Set-ItemProperty -Path "HKCU:\SOFTWARE\Microsoft\Windows\CurrentVersion\Internet Settings" -Name "EnableQuic" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="WinINET QUIC";Status="PASS"}
+            $p="HKLM:\SOFTWARE\Policies\Google\Chrome";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "QuicAllowed" -Value 0 -Type DWord;$results+=@{Name="Chrome QUIC";Status="PASS"}
+            $p="HKLM:\SOFTWARE\Policies\Microsoft\Edge";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "QuicAllowed" -Value 0 -Type DWord;$results+=@{Name="Edge QUIC";Status="PASS"}
         }
         3 {
             Get-NetAdapterBinding -ComponentID ms_tcpip6 -ErrorAction SilentlyContinue|ForEach-Object{Disable-NetAdapterBinding -Name $_.Name -ComponentID ms_tcpip6 -ErrorAction SilentlyContinue};$results+=@{Name="IPv6 bindings";Status="PASS"}
@@ -190,57 +176,52 @@ function Invoke-PhaseEngine {
             netsh interface 6to4 set state disabled 2>&1|Out-Null;$results+=@{Name="6to4";Status="PASS"}
             netsh interface isatap set state disabled 2>&1|Out-Null;$results+=@{Name="ISATAP";Status="PASS"}
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name "DisabledComponents" -Value 0xFF -Type DWord;$results+=@{Name="DisabledComponents=0xFF";Status="PASS";Reboot=$true}
-            $dnsPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient";if(!(Test-Path $dnsPath)){New-Item -Path $dnsPath -Force|Out-Null};Set-ItemProperty -Path $dnsPath -Name "DisableSmartNameResolution" -Value 1 -Type DWord;$results+=@{Name="Smart Name Resolution";Status="PASS"}
+            $p="HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "DisableSmartNameResolution" -Value 1 -Type DWord;$results+=@{Name="Smart Name Resolution";Status="PASS"}
         }
         4 {
-            $netshParams=@("autotuninglevel=normal","rss=disabled","chimney=disabled","dca=disabled","netdma=disabled","ecncapability=disabled","timestamps=disabled","rsc=disabled","fastopen=disabled","fastopenfallback=disabled","hystart=disabled","pacingprofile=off")
-            foreach($p in $netshParams){$kv=$p -split "=";netsh int tcp set global "$($kv[0])=$($kv[1])" 2>&1|Out-Null}
+            @("autotuninglevel=normal","rss=disabled","chimney=disabled","dca=disabled","netdma=disabled","ecncapability=disabled","timestamps=disabled","rsc=disabled","fastopen=disabled","fastopenfallback=disabled","hystart=disabled","pacingprofile=off")|ForEach-Object{$kv=$_ -split "=";netsh int tcp set global "$($kv[0])=$($kv[1])" 2>&1|Out-Null}
             $results+=@{Name="netsh TCP globals";Status="PASS"}
-            $regPath="HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
-            $tcpipParams=@{KeepAliveTime=60000;KeepAliveInterval=1000;DefaultTTL=128;DisableTaskOffload=1;EnableECN=0;EnableHeuristics=0;MaxFreeTcbs=65536;MaxHashTableSize=65536;NumTcbTablePartitions=8;Tcp1323Opts=0;TcpMaxDupAcks=2;TcpTimedWaitDelay=30;MaxUserPort=65534}
-            foreach($kv in $tcpipParams.GetEnumerator()){Set-ItemProperty -Path $regPath -Name $kv.Key -Value $kv.Value -Type DWord -ErrorAction SilentlyContinue}
-            $results+=@{Name="Tcpip parameters ($($tcpipParams.Count))";Status="PASS";Reboot=$true}
-            $interfaces=Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" -ErrorAction SilentlyContinue
-            foreach($iface in $interfaces){Set-ItemProperty -Path $iface.PSPath -Name "TcpAckFrequency" -Value 1 -Type DWord -ErrorAction SilentlyContinue;Set-ItemProperty -Path $iface.PSPath -Name "TCPNoDelay" -Value 1 -Type DWord -ErrorAction SilentlyContinue}
+            $rp="HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters"
+            @{KeepAliveTime=60000;KeepAliveInterval=1000;DefaultTTL=128;DisableTaskOffload=1;EnableECN=0;EnableHeuristics=0;MaxFreeTcbs=65536;MaxHashTableSize=65536;NumTcbTablePartitions=8;Tcp1323Opts=0;TcpMaxDupAcks=2;TcpTimedWaitDelay=30;MaxUserPort=65534}.GetEnumerator()|ForEach-Object{Set-ItemProperty -Path $rp -Name $_.Key -Value $_.Value -Type DWord -ErrorAction SilentlyContinue}
+            $results+=@{Name="Tcpip parameters (16)";Status="PASS";Reboot=$true}
+            Get-ChildItem "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters\Interfaces" -ErrorAction SilentlyContinue|ForEach-Object{Set-ItemProperty -Path $_.PSPath -Name "TcpAckFrequency" -Value 1 -Type DWord -ErrorAction SilentlyContinue;Set-ItemProperty -Path $_.PSPath -Name "TCPNoDelay" -Value 1 -Type DWord -ErrorAction SilentlyContinue}
             $results+=@{Name="Nagle disabled";Status="PASS"}
         }
         5 {
-            $services=@("DiagTrack","dmwappushservice","WMPNetworkSvc","wisvc","lfsvc","SharedAccess","SSDPSRV","fdPHost","upnphost","FDResPub")
-            foreach($svcName in $services){$svc=Get-Service -Name $svcName -ErrorAction SilentlyContinue;if($svc){Stop-Service $svcName -Force -ErrorAction SilentlyContinue;Set-Service $svcName -StartupType Disabled -ErrorAction SilentlyContinue};$results+=@{Name="Service $svcName";Status="PASS"}}
-            $hostsPath="$env:SystemRoot\System32\drivers\etc\hosts"
-            $telemetryDomains=@("v10.events.data.microsoft.com","v20.events.data.microsoft.com","vortex.data.microsoft.com","vortex-win.data.microsoft.com","telecommand.telemetry.microsoft.com","oca.telemetry.microsoft.com","sqm.telemetry.microsoft.com","watson.telemetry.microsoft.com","redir.metaservices.microsoft.com","choice.microsoft.com","df.telemetry.microsoft.com","feedback.windows.com","feedback.microsoft-hohm.com","feedback.search.microsoft.com","rad.msn.com","preview.msn.com","ad.doubleclick.net","ads.msn.com","ads1.msads.net","settings-sandbox.data.microsoft.com","vsgallery.com","watson.microsoft.com","ui.skype.com","pricelist.skype.com","apps.skype.com","m.hotmail.com","s.gateway.messenger.live.com","sa.windows.com")
-            $existingHosts=Get-Content $hostsPath -ErrorAction SilentlyContinue;$added=0
-            foreach($domain in $telemetryDomains){if($existingHosts -notcontains "0.0.0.0 $domain"){Add-Content -Path $hostsPath -Value "0.0.0.0 $domain" -ErrorAction SilentlyContinue;$added++}}
+            @("DiagTrack","dmwappushservice","WMPNetworkSvc","wisvc","lfsvc","SharedAccess","SSDPSRV","fdPHost","upnphost","FDResPub")|ForEach-Object{$svc=Get-Service -Name $_ -ErrorAction SilentlyContinue;if($svc){Stop-Service $_ -Force -ErrorAction SilentlyContinue;Set-Service $_ -StartupType Disabled -ErrorAction SilentlyContinue};$results+=@{Name="Service $_";Status="PASS"}}
+            $hp="$env:SystemRoot\System32\drivers\etc\hosts"
+            $domains=@("v10.events.data.microsoft.com","v20.events.data.microsoft.com","vortex.data.microsoft.com","vortex-win.data.microsoft.com","telecommand.telemetry.microsoft.com","oca.telemetry.microsoft.com","sqm.telemetry.microsoft.com","watson.telemetry.microsoft.com","redir.metaservices.microsoft.com","choice.microsoft.com","df.telemetry.microsoft.com","feedback.windows.com","feedback.microsoft-hohm.com","feedback.search.microsoft.com","rad.msn.com","preview.msn.com","ad.doubleclick.net","ads.msn.com","ads1.msads.net","settings-sandbox.data.microsoft.com","vsgallery.com","watson.microsoft.com","ui.skype.com","pricelist.skype.com","apps.skype.com","m.hotmail.com","s.gateway.messenger.live.com","sa.windows.com")
+            $eh=Get-Content $hp -ErrorAction SilentlyContinue;$added=0
+            foreach($d in $domains){if($eh -notcontains "0.0.0.0 $d"){Add-Content -Path $hp -Value "0.0.0.0 $d" -ErrorAction SilentlyContinue;$added++}}
             $results+=@{Name="Hosts blocks ($added domains)";Status="PASS"}
             Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Services\Dnscache\Parameters" -Name "EnableMDNS" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="mDNS disabled";Status="PASS"}
             Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\AdvertisingInfo" -Name "Enabled" -Value 0 -Type DWord -ErrorAction SilentlyContinue;$results+=@{Name="Advertising ID";Status="PASS"}
-            $cortanaPath="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search";if(!(Test-Path $cortanaPath)){New-Item -Path $cortanaPath -Force|Out-Null};Set-ItemProperty -Path $cortanaPath -Name "AllowCortana" -Value 0 -Type DWord;Set-ItemProperty -Path $cortanaPath -Name "DisableWebSearch" -Value 1 -Type DWord;Set-ItemProperty -Path $cortanaPath -Name "ConnectedSearchUseWeb" -Value 0 -Type DWord;$results+=@{Name="Cortana/Cloud Search";Status="PASS"}
+            $p="HKLM:\SOFTWARE\Policies\Microsoft\Windows\Windows Search";if(!(Test-Path $p)){New-Item -Path $p -Force|Out-Null};Set-ItemProperty -Path $p -Name "AllowCortana" -Value 0 -Type DWord;Set-ItemProperty -Path $p -Name "DisableWebSearch" -Value 1 -Type DWord;Set-ItemProperty -Path $p -Name "ConnectedSearchUseWeb" -Value 0 -Type DWord;$results+=@{Name="Cortana/Cloud Search";Status="PASS"}
         }
         6 {
-            $watcherDir="C:\Users\$env:USERNAME\.no-leaks-watcher";if(!(Test-Path $watcherDir)){New-Item -Path $watcherDir -ItemType Directory -Force|Out-Null}
-            $watcherScript="`$tunName = `"$($script:CFG.TunName)`"`n`$targetMtu = $($script:CFG.TunMtu)`nwhile (`$true) {`n  try {`n    `$adapter = Get-NetAdapter -Name `$tunName -ErrorAction SilentlyContinue`n    if (`$adapter -and `$adapter.Status -eq `"Up`") {`n      `$mtuOut = netsh interface ipv4 show subinterface `$tunName 2>`$null`n      if (`$mtuOut -notmatch `$targetMtu) { netsh interface ipv4 set subinterface `$tunName mtu=`$targetMtu store=persistent 2>`$null }`n      `$ipv6 = Get-NetAdapterBinding -Name `$tunName -ComponentID `"ms_tcpip6`" -ErrorAction SilentlyContinue`n      if (`$ipv6 -and `$ipv6.Enabled) { Disable-NetAdapterBinding -Name `$tunName -ComponentID `"ms_tcpip6`" -ErrorAction SilentlyContinue }`n    }`n  } catch {}`n  Start-Sleep -Seconds 3`n}"
-            $watcherScript|Out-File -FilePath "$watcherDir\mtu-watcher.ps1" -Encoding UTF8 -Force;$results+=@{Name="Watcher script";Status="PASS"}
+            $wd="C:\Users\$env:USERNAME\.no-leaks-watcher";if(!(Test-Path $wd)){New-Item -Path $wd -ItemType Directory -Force|Out-Null}
+            $ws="`$tunName = `"$($script:CFG.TunName)`"`n`$targetMtu = $($script:CFG.TunMtu)`nwhile (`$true) {`n  try {`n    `$adapter = Get-NetAdapter -Name `$tunName -ErrorAction SilentlyContinue`n    if (`$adapter -and `$adapter.Status -eq `"Up`") {`n      `$mtuOut = netsh interface ipv4 show subinterface `$tunName 2>`$null`n      if (`$mtuOut -notmatch `$targetMtu) { netsh interface ipv4 set subinterface `$tunName mtu=`$targetMtu store=persistent 2>`$null }`n      `$ipv6 = Get-NetAdapterBinding -Name `$tunName -ComponentID `"ms_tcpip6`" -ErrorAction SilentlyContinue`n      if (`$ipv6 -and `$ipv6.Enabled) { Disable-NetAdapterBinding -Name `$tunName -ComponentID `"ms_tcpip6`" -ErrorAction SilentlyContinue }`n    }`n  } catch {}`n  Start-Sleep -Seconds 3`n}"
+            $ws|Out-File -FilePath "$wd\mtu-watcher.ps1" -Encoding UTF8 -Force;$results+=@{Name="Watcher script";Status="PASS"}
             Unregister-ScheduledTask -TaskName "NoLeaksWatcher" -Confirm:$false -ErrorAction SilentlyContinue
-            $taskResult=schtasks /create /tn "NoLeaksWatcher" /tr "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$watcherDir\mtu-watcher.ps1`"" /sc onlogon /rl highest /ru SYSTEM /f 2>&1
-            if($LASTEXITCODE -eq 0){$results+=@{Name="Scheduled task";Status="PASS"};schtasks /run /tn "NoLeaksWatcher" 2>&1|Out-Null}else{$results+=@{Name="Scheduled task";Status="FAIL";Detail=$taskResult}}
+            $tr=schtasks /create /tn "NoLeaksWatcher" /tr "powershell.exe -ExecutionPolicy Bypass -WindowStyle Hidden -File `"$wd\mtu-watcher.ps1`"" /sc onlogon /rl highest /ru SYSTEM /f 2>&1
+            if($LASTEXITCODE -eq 0){$results+=@{Name="Scheduled task";Status="PASS"};schtasks /run /tn "NoLeaksWatcher" 2>&1|Out-Null}else{$results+=@{Name="Scheduled task";Status="FAIL";Detail=$tr}}
         }
         7 {
-            Get-NetFirewallProfile|ForEach-Object{$st=if($_.Enabled){"PASS"}else{"FAIL"};$results+=@{Name="Firewall $($_.Name)";Status=$st}}
-            $ruleNames=@("Block STUN UDP 3478 Out","Block STUN TCP 3478 Out","Block TURN TCP 5349 Out","Block mDNS UDP 5353 Out","Block QUIC UDP 443 Out","Block SSDP UDP 1900 Out","Block LLMNR UDP 5355 Out")
-            foreach($rname in $ruleNames){$r=Get-NetFirewallRule -DisplayName $rname -ErrorAction SilentlyContinue;$st=if($r -and $r.Enabled -eq "True" -and $r.Action -eq "Block"){"PASS"}else{"FAIL"};$results+=@{Name="Rule: $rname";Status=$st}}
-            $dangerPorts=@(3478,5349,5353,1900,5355);$tcpListen=Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue|Where-Object{$_.LocalPort -in $dangerPorts};$udpListen=Get-NetUDPEndpoint -ErrorAction SilentlyContinue|Where-Object{$_.LocalPort -in $dangerPorts}
-            $st=if(!$tcpListen -and !$udpListen){"PASS"}else{"WARN"};$results+=@{Name="Dangerous ports";Status=$st}
-            $llmnr=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" -ErrorAction SilentlyContinue;$st=if($llmnr.EnableMulticast -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="LLMNR";Status=$st}
-            $dc=Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name DisabledComponents -ErrorAction SilentlyContinue;$st=if($dc.DisabledComponents -eq 255){"PASS"}else{"WARN"};$results+=@{Name="IPv6 DisabledComponents";Status=$st}
-            $chromeQuic=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name QuicAllowed -ErrorAction SilentlyContinue;$st=if($chromeQuic.QuicAllowed -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="Chrome QUIC";Status=$st}
-            $edgeQuic=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name QuicAllowed -ErrorAction SilentlyContinue;$st=if($edgeQuic.QuicAllowed -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="Edge QUIC";Status=$st}
-            $tcp=netsh int tcp show global 2>$null;$st=if($tcp -match "Fast Open\s*:\s*disabled"){"PASS"}else{"WARN"};$results+=@{Name="TCP Fast Open";Status=$st}
-            $ttl=Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name DefaultTTL -ErrorAction SilentlyContinue;$st=if($ttl.DefaultTTL -eq 128){"PASS"}else{"FAIL"};$results+=@{Name="DefaultTTL";Status=$st}
-            $svcList=@("DiagTrack","dmwappushservice","WMPNetworkSvc","wisvc","lfsvc","SharedAccess","SSDPSRV");foreach($svcName in $svcList){$svc=Get-Service -Name $svcName -ErrorAction SilentlyContinue;$st=if(!$svc -or $svc.Status -eq "Stopped"){"PASS"}else{"WARN"};$results+=@{Name="Service $svcName";Status=$st}}
-            $hostsContent=Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" -ErrorAction SilentlyContinue|Where-Object{$_ -notmatch "^\s*#" -and $_ -notmatch "^\s*$"};$blocked=($hostsContent|Select-String "0\.0\.0\.0"|Measure-Object).Count;$st=if($blocked -gt 50){"PASS"}else{"WARN"};$results+=@{Name="Hosts blocks ($blocked)";Status=$st}
-            $tun=Get-NetAdapter -ErrorAction SilentlyContinue|Where-Object{$_.InterfaceDescription -match "TUN|TAP|VPN|SocksTunnel" -and $_.Status -eq "Up"};$st=if($tun){"PASS"}else{"WARN"};$results+=@{Name="Tunnel";Status=$st}
-            $mtuOut=netsh interface ipv4 show subinterface $script:CFG.TunName 2>$null;$st=if($mtuOut -match $script:CFG.TunMtu){"PASS"}else{"WARN"};$results+=@{Name="MTU on $($script:CFG.TunName)";Status=$st}
-            try{$extIp=(Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing -TimeoutSec 10).Content;$results+=@{Name="External IP: $extIp";Status="PASS"};if($script:CFG.ExpectedIp -and $extIp -eq $script:CFG.ExpectedIp){$results+=@{Name="IP matches expected";Status="PASS"}}elseif($script:CFG.ExpectedIp){$results+=@{Name="IP mismatch!";Status="WARN"}}}catch{$results+=@{Name="External IP";Status="WARN";Detail=$_.Exception.Message}}
+            Get-NetFirewallProfile|ForEach-Object{$s=if($_.Enabled){"PASS"}else{"FAIL"};$results+=@{Name="Firewall $($_.Name)";Status=$s}}
+            @("Block STUN UDP 3478 Out","Block STUN TCP 3478 Out","Block TURN TCP 5349 Out","Block mDNS UDP 5353 Out","Block QUIC UDP 443 Out","Block SSDP UDP 1900 Out","Block LLMNR UDP 5355 Out")|ForEach-Object{$r=Get-NetFirewallRule -DisplayName $_ -ErrorAction SilentlyContinue;$s=if($r -and $r.Enabled -eq "True" -and $r.Action -eq "Block"){"PASS"}else{"FAIL"};$results+=@{Name="Rule: $_";Status=$s}}
+            $dp=@(3478,5349,5353,1900,5355);$tl=Get-NetTCPConnection -State Listen -ErrorAction SilentlyContinue|Where-Object{$_.LocalPort -in $dp};$ul=Get-NetUDPEndpoint -ErrorAction SilentlyContinue|Where-Object{$_.LocalPort -in $dp}
+            $s=if(!$tl -and !$ul){"PASS"}else{"WARN"};$results+=@{Name="Dangerous ports";Status=$s}
+            $ll=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\DNSClient" -ErrorAction SilentlyContinue;$s=if($ll.EnableMulticast -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="LLMNR";Status=$s}
+            $dc=Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip6\Parameters" -Name DisabledComponents -ErrorAction SilentlyContinue;$s=if($dc.DisabledComponents -eq 255){"PASS"}else{"WARN"};$results+=@{Name="IPv6 DisabledComponents";Status=$s}
+            $cq=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Google\Chrome" -Name QuicAllowed -ErrorAction SilentlyContinue;$s=if($cq.QuicAllowed -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="Chrome QUIC";Status=$s}
+            $eq=Get-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Edge" -Name QuicAllowed -ErrorAction SilentlyContinue;$s=if($eq.QuicAllowed -eq 0){"PASS"}else{"FAIL"};$results+=@{Name="Edge QUIC";Status=$s}
+            $tcp=netsh int tcp show global 2>$null;$s=if($tcp -match "Fast Open\s*:\s*disabled"){"PASS"}else{"WARN"};$results+=@{Name="TCP Fast Open";Status=$s}
+            $ttl=Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Services\Tcpip\Parameters" -Name DefaultTTL -ErrorAction SilentlyContinue;$s=if($ttl.DefaultTTL -eq 128){"PASS"}else{"FAIL"};$results+=@{Name="DefaultTTL";Status=$s}
+            @("DiagTrack","dmwappushservice","WMPNetworkSvc","wisvc","lfsvc","SharedAccess","SSDPSRV")|ForEach-Object{$svc=Get-Service -Name $_ -ErrorAction SilentlyContinue;$s=if(!$svc -or $svc.Status -eq "Stopped"){"PASS"}else{"WARN"};$results+=@{Name="Service $_";Status=$s}}
+            $hc=Get-Content "$env:SystemRoot\System32\drivers\etc\hosts" -ErrorAction SilentlyContinue|Where-Object{$_ -notmatch "^\s*#" -and $_ -notmatch "^\s*$"};$b=($hc|Select-String "0\.0\.0\.0"|Measure-Object).Count;$s=if($b -gt 50){"PASS"}else{"WARN"};$results+=@{Name="Hosts blocks ($b)";Status=$s}
+            $tun=Get-NetAdapter -ErrorAction SilentlyContinue|Where-Object{$_.InterfaceDescription -match "TUN|TAP|VPN|SocksTunnel" -and $_.Status -eq "Up"};$s=if($tun){"PASS"}else{"WARN"};$results+=@{Name="Tunnel";Status=$s}
+            $mo=netsh interface ipv4 show subinterface $script:CFG.TunName 2>$null;$s=if($mo -match $script:CFG.TunMtu){"PASS"}else{"WARN"};$results+=@{Name="MTU on $($script:CFG.TunName)";Status=$s}
+            try{$ip=(Invoke-WebRequest -Uri "https://api.ipify.org" -UseBasicParsing -TimeoutSec 10).Content;$results+=@{Name="External IP: $ip";Status="PASS"};if($script:CFG.ExpectedIp -and $ip -eq $script:CFG.ExpectedIp){$results+=@{Name="IP matches";Status="PASS"}}elseif($script:CFG.ExpectedIp){$results+=@{Name="IP mismatch!";Status="WARN"}}}catch{$results+=@{Name="External IP";Status="WARN"}}
         }
     }
     return $results
@@ -248,17 +229,14 @@ function Invoke-PhaseEngine {
 
 function Run-PhaseWithUI {
     param([int]$PhaseNum)
-    $script:PhaseStatus[$PhaseNum-1]="running"
-    Draw-Screen
-    $pName=STR ("p$($PhaseNum)_name")
-    Write-Host "";Write-Host ">>> Phase $PhaseNum : $pName" -ForegroundColor Cyan;Write-Host ""
+    $script:PhaseStatus[$PhaseNum-1]="running";Draw-Screen
+    Write-Host "";Write-Host ">>> Phase $PhaseNum : " -NoNewline -ForegroundColor Cyan;Write-Host (STR ("p$($PhaseNum)_name")) -ForegroundColor White;Write-Host ""
     try{
         $results=Invoke-PhaseEngine -Phase $PhaseNum;$phaseFail=$false
         foreach($r in $results){
             $icon=switch($r.Status){"PASS"{"[OK]";$script:TotalPass++}"FAIL"{"[FAIL]";$script:TotalFail++;$phaseFail=$true}"WARN"{"[WARN]";$script:TotalWarn++}}
             $color=switch($r.Status){"PASS"{"Green"}"FAIL"{"Red"}"WARN"{"Yellow"}}
             Write-Host ("  $icon $($r.Name)") -ForegroundColor $color
-            if($r.Detail){Write-Host ("       $($r.Detail)") -ForegroundColor DarkGray}
         }
         if($phaseFail){$script:PhaseStatus[$PhaseNum-1]="failed"}else{$script:PhaseStatus[$PhaseNum-1]="done"}
         if($script:PhaseReboot[$PhaseNum-1]){Write-Host "";Write-Host ("  "+(STR "reboot")) -ForegroundColor Yellow}
@@ -279,19 +257,23 @@ function Run-AllPhasesWithUI {
 
 function Show-Settings {
     Clear-Host;Write-Host "";Write-Host ("  === "+(STR "settings")+" ===") -ForegroundColor Cyan;Write-Host ""
-    Write-Host ("  "+(STR "current")+": TUN="+$script:CFG.TunName+", MTU="+$script:CFG.TunMtu+", IP="+$(if($script:CFG.ExpectedIp){$script:CFG.ExpectedIp}else{"-"})) -ForegroundColor Gray;Write-Host ""
-    $newTun=Read-Host ("  "+(STR "enter_tun")+" ["+$script:CFG.TunName+"]");if($newTun.Trim() -ne ""){$script:CFG.TunName=$newTun.Trim()}
-    $newMtu=Read-Host ("  "+(STR "enter_mtu")+" ["+$script:CFG.TunMtu+"]");if($newMtu.Trim() -ne ""){$script:CFG.TunMtu=$newMtu.Trim()}
-    $newIp=Read-Host ("  "+(STR "enter_ip")+" ["+$(if($script:CFG.ExpectedIp){$script:CFG.ExpectedIp}else{""})+"]");if($newIp.Trim() -ne ""){$script:CFG.ExpectedIp=$newIp.Trim()}
+    Write-Host ("  "+(STR "current")+": TUN="+$script:CFG.TunName+", MTU="+$script:CFG.TunMtu) -ForegroundColor Gray;Write-Host ""
+    $nt=Read-Host ("  "+(STR "enter_tun")+" ["+$script:CFG.TunName+"]");if($nt.Trim() -ne ""){$script:CFG.TunName=$nt.Trim()}
+    $nm=Read-Host ("  "+(STR "enter_mtu")+" ["+$script:CFG.TunMtu+"]");if($nm.Trim() -ne ""){$script:CFG.TunMtu=$nm.Trim()}
+    $ni=Read-Host ("  "+(STR "enter_ip")+" ["+$(if($script:CFG.ExpectedIp){$script:CFG.ExpectedIp}else{""})+"]");if($ni.Trim() -ne ""){$script:CFG.ExpectedIp=$ni.Trim()}
     Write-Host "";Write-Host ("  "+(STR "saved")) -ForegroundColor Green;Start-Sleep -Seconds 1
 }
 
 function Show-LanguageSelect {
-    Clear-Host;Write-Host "";Write-Host "  ========================================" -ForegroundColor Cyan
-    Write-Host "       Windows 11 No-Leaks TUI" -ForegroundColor White;Write-Host "       Network leak hardening" -ForegroundColor Gray
+    Clear-Host;Write-Host ""
+    Write-Host "  ========================================" -ForegroundColor Cyan
+    Write-Host "       Windows 11 No-Leaks TUI v3.0" -ForegroundColor White
+    Write-Host "       Network leak hardening" -ForegroundColor Gray
     Write-Host "  ========================================" -ForegroundColor Cyan;Write-Host ""
-    Write-Host "  1. English" -ForegroundColor White;Write-Host "  2. Russkij" -ForegroundColor White;Write-Host ""
-    $choice=Read-Host "  > ";switch($choice){"2"{$script:CFG.Lang="RU"}default{$script:CFG.Lang="EN"}}
+    Write-Host "  1. English" -ForegroundColor White
+    Write-Host "  2. Russian (Russkij)" -ForegroundColor White;Write-Host ""
+    $choice=Read-Host "  > "
+    switch($choice){"2"{$script:CFG.Lang="RU"}default{$script:CFG.Lang="EN"}}
 }
 
 Show-LanguageSelect
