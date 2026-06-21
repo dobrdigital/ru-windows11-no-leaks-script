@@ -14,7 +14,7 @@ $script:STR=@{
         admin_ok="Administrator: YES";admin_no="Administrator: NO (limited)"
         settings="SETTINGS";current="Current"
         enter_tun="TUN adapter name";enter_mtu="MTU value";enter_ip="Expected IP (optional)"
-        saved="Settings saved!";confirm_all="Run ALL phases?";yes_no=" (1=Yes / 2=No)"
+        saved="Settings saved!";confirm_all="Run ALL phases?"
         summary="EXECUTION SUMMARY";total_pass="Total PASS";total_fail="Total FAIL";total_warn="Total WARN"
         reboot_now="Reboot now?";reboot_1="1. Yes, reboot now";reboot_2="2. No, later"
         press_key="Press any key to continue..."
