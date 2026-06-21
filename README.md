@@ -8,7 +8,29 @@ Completely blocks real IP leaks: WebRTC/STUN/TURN/mDNS/QUIC, disables IPv6, tune
 
 > ⚠️ **WARNING.** These scripts modify system Windows settings. Run at your own risk. Always create a Windows restore point before running. Scripts completely disable IPv6 — this may break some local services. All scripts require administrator privileges. Review script contents before running — don't run blindly. The author is not responsible for any damage.
 
-## Quick Download (.exe)
+
+## TUI Launcher (Text Interface)
+
+**Lightweight terminal-based UI â€” no GUI dependencies:**
+
+â¬‡ï¸ **[Download NoLeaks-TUI.bat](https://github.com/dobrdigital/ru-windows11-no-leaks-script/raw/master/NoLeaks-TUI.bat)** (91 B)
+â¬‡ï¸ **[Download NoLeaks-TUI.ps1](https://github.com/dobrdigital/ru-windows11-no-leaks-script/raw/master/NoLeaks-TUI.ps1)** (13 KB)
+
+1. Download both files to the same folder
+2. Double-click NoLeaks-TUI.bat
+3. Select language (EN/RU)
+4. Press 1-7 to run individual phases, or 'a' for all
+5. Press 's' to configure settings
+6. Press 'q' to quit
+
+**Features:**
+- Dark terminal UI with color-coded status
+- Per-phase execution with real-time log
+- Settings: TUN adapter name, MTU, expected IP
+- Auto-reboot prompt after phases 3 and 4
+- Works in any Windows terminal (cmd, PowerShell, Windows Terminal)
+
+ (.exe)
 
 **No install, no PowerShell knowledge needed:**
 
