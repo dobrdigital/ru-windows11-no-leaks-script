@@ -1,0 +1,1 @@
+@echo off`npowershell -ExecutionPolicy Bypass -NoProfile -File "%~dp0NoLeaks.ps1"`npause
