@@ -129,6 +129,10 @@ Scripts are provided "as is" without any warranty. The author is not responsible
 
 ---
 
+<!-- Search tags: ТСПУ DPI обход блокировок VPN HAPP proxy VLESS Reality Trojan sing-box Clash v2ray WireGuard анти-DPI прокси туннель IPv6 WebRTC QUIC leak DNS утечки персональный сервер заграница firewall файрвол телеметрия telemetry Windows hardening TCP MTU TUN адаптер watcher обход провайдер фильтрация GFW censorship bypass geo-block restriction -->
+
+---
+
 ---
 
 ---
@@ -261,3 +265,7 @@ MIT — см. [LICENSE](LICENSE). Можно свободно использов
 ## Отказ от ответственности
 
 Скрипты предоставляются "как есть" без каких-либо гарантий. Автор не несёт ответственности за любой ущерб, потерю данных или проблемы, возникшие в результате использования. Всегда создавай точку восстановления Windows перед запуском.
+
+---
+
+<!-- Поисковые теги: ТСПУ DPI обход блокировок VPN HAPP proxy VLESS Reality Trojan sing-box Clash v2ray WireGuard анти-DPI прокси туннель IPv6 WebRTC QUIC leak DNS утечки персональный сервер заграница firewall файрвол телеметрия telemetry Windows hardening TCP MTU TUN адаптер watcher обход провайдер фильтрация GFW censorship bypass geo-block restriction скачать скрипт настройка Windows -->
