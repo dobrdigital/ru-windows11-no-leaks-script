@@ -1,6 +1,6 @@
 ﻿# Windows 11 No-Leaks Script
 
-**Russian documentation is below**
+**Русская документация ниже**
 
 A collection of PowerShell scripts for hardening Windows 11 network stack.
 
