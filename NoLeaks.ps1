@@ -83,13 +83,6 @@ $script:STR=@{
         total_pass="[RUS] Vsego PASS"
         total_fail="[RUS] Vsego FAIL"
         total_warn="[RUS] Vsego WARN"
-        menu_settings="Nastroiki"
-        current="Tekuschee"
-        enter_tun="Imya TUN-adaptera"
-        enter_mtu="Znachenie MTU"
-        enter_ip="Ozhidaemyi IP (neobyazatelno)"
-        saved="Nastroiki sokhranyes!"
-        confirm_all="Zapustit VSE fazy?"
     }
 }
 
