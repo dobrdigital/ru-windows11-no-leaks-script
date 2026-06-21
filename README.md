@@ -1,10 +1,29 @@
 # Windows 11 No-Leaks Script
 
+> 🇷🇺 **Русская версия документации находится ниже** (Russian documentation is further down this page)
+
 A collection of PowerShell scripts and a [pi coding agent](https://github.com/earendil-works/pi-coding-agent) skill that hardens Windows 11 network stack for use with proxy/VPN clients (HAPP, Clash Meta, sing-box, v2ray, WireGuard) using VLESS+Reality, Trojan, and similar protocols.
 
 Completely blocks real IP leaks: WebRTC/STUN/TURN/mDNS/QUIC, disables IPv6, tunes TCP stack, blocks telemetry, sets MTU 1380 for tunnel stability, and creates a watcher task to maintain settings automatically.
 
 > ⚠️ **WARNING.** These scripts modify system Windows settings. Run at your own risk. Always create a Windows restore point before running. Scripts completely disable IPv6 — this may break some local services. All scripts require administrator privileges. Review script contents before running — don't run blindly. The author is not responsible for any damage.
+
+## Quick Download (.exe)
+
+**No install, no PowerShell knowledge needed:**
+
+⬇️ **[Download NoLeaks-GUI.exe](https://github.com/dobrdigital/ru-windows11-no-leaks-script/releases/download/v1.0.0/NoLeaks-GUI.exe)** (118 KB)
+
+1. Download `NoLeaks-GUI.exe`
+2. Right-click → **Run as administrator**
+3. Select language (EN/RU)
+4. Enter your TUN adapter name (e.g. `happ-default-tun`)
+5. Click **Run All**
+6. Reboot when prompted
+
+That's it. The GUI handles everything.
+
+---
 
 ## Who is this for
 
@@ -129,21 +148,36 @@ Scripts are provided "as is" without any warranty. The author is not responsible
 
 ---
 
-<!-- Search tags: ТСПУ DPI обход блокировок VPN HAPP proxy VLESS Reality Trojan sing-box Clash v2ray WireGuard анти-DPI прокси туннель IPv6 WebRTC QUIC leak DNS утечки персональный сервер заграница firewall файрвол телеметрия telemetry Windows hardening TCP MTU TUN адаптер watcher обход провайдер фильтрация GFW censorship bypass geo-block restriction -->
-
----
-
 ---
 
 ---
 
 # Windows 11 No-Leaks Script (Русский)
 
+> 🇬🇧 **English documentation is above** (Английская документация находится выше на этой странице)
+
 Набор PowerShell-скриптов и скилл для [pi coding agent](https://github.com/earendil-works/pi-coding-agent) для настройки сетевого стека Windows 11 при использовании прокси/VPN клиентов (HAPP, Clash Meta, sing-box, v2ray, WireGuard) с протоколами VLESS+Reality, Trojan и т.п.
 
 Полностью закрывает утечки реального IP: WebRTC/STUN/TURN/mDNS/QUIC, отключает IPv6, оптимизирует TCP-стек, блокирует телеметрию, выставляет MTU 1380 для стабильности туннеля и создаёт watcher-задачу для автоматического поддержания настроек.
 
 > ⚠️ **ВНИМАНИЕ.** Скрипты меняют системные настройки Windows. Выполняй на свой страх и риск. Обязательно создай точку восстановления Windows перед запуском. Скрипты полностью отключают IPv6 — это может сломать некоторые локальные сервисы. Все скрипты требуют прав администратора. Перед запуском проверь содержимое скриптов — не запускай вслепую. Автор не несёт ответственности за любой ущерб.
+
+## Быстрая загрузка (.exe)
+
+**Не нужно ничего устанавливать, знание PowerShell не требуется:**
+
+⬇️ **[Скачать NoLeaks-GUI.exe](https://github.com/dobrdigital/ru-windows11-no-leaks-script/releases/download/v1.0.0/NoLeaks-GUI.exe)** (118 КБ)
+
+1. Скачай `NoLeaks-GUI.exe`
+2. ПКМ → **Запуск от имени администратора**
+3. Выбери язык (EN/RU)
+4. Введи имя TUN-адаптера (напр. `happ-default-tun`)
+5. Нажми **Запустить всё**
+6. Перезагрузись когда попросит
+
+Всё. GUI сделает всё сам.
+
+---
 
 ## Кому подойдёт
 
@@ -206,9 +240,7 @@ cd ru-windows11-no-leaks-script/scripts
 
 3. **Запускай фазы по порядку от администратора:**
    ```powershell
-   # Открой PowerShell от имени администратора
    cd C:\path\to\ru-windows11-no-leaks-script\scripts
-
    .\block-webrtc.ps1
    .\disable-quic.ps1
    .\disable-ipv6-full.ps1
@@ -268,4 +300,4 @@ MIT — см. [LICENSE](LICENSE). Можно свободно использов
 
 ---
 
-<!-- Поисковые теги: ТСПУ DPI обход блокировок VPN HAPP proxy VLESS Reality Trojan sing-box Clash v2ray WireGuard анти-DPI прокси туннель IPv6 WebRTC QUIC leak DNS утечки персональный сервер заграница firewall файрвол телеметрия telemetry Windows hardening TCP MTU TUN адаптер watcher обход провайдер фильтрация GFW censorship bypass geo-block restriction скачать скрипт настройка Windows -->
+<!-- Search tags: ТСПУ DPI обход блокировок VPN HAPP proxy VLESS Reality Trojan sing-box Clash v2ray WireGuard анти-DPI прокси туннель IPv6 WebRTC QUIC leak DNS утечки персональный сервер заграница firewall файрвол телеметрия telemetry Windows hardening TCP MTU TUN адаптер watcher обход провайдер фильтрация GFW censorship bypass geo-block restriction скачать скрипт настройка Windows -->
