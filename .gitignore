@@ -1,0 +1,31 @@
+# Логи и временные файлы
+*.log
+*.bin
+*.tmp
+*.bak
+
+# Логи сессии (создаются скриптами)
+mtu-result.log
+task-create.log
+task-query.log
+task-status.log
+watcher-verify.log
+fix-all.log
+
+# Резервные копии hosts
+hosts.bak
+
+# OS файлы
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# PowerShell
+*.pso
+*.psc1
