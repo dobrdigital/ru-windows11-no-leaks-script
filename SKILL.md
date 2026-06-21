@@ -1,16 +1,16 @@
 ---
 name: windows-russia-anti-dpi
-description: Harden Windows 11 against network leaks and Russian TSPU DPI when using a proxy/VPN client (HAPP, Clash, sing-box, v2ray). Disables WebRTC/STUN/TURN/mDNS/QUIC leaks, fully disables IPv6, tunes TCP stack, blocks telemetry, sets MTU 1380 for VLESS+Reality tunnels, and creates a watcher task. Includes a full leak audit. Use when a user wants to prevent IP/DNS/WebRTC leaks, bypass Russian DPI, or audit a Windows machine for network leaks.
-compatibility: Windows 10/11, PowerShell 5.1+ (run as Administrator). Requires a proxy/VPN client with a TUN interface (HAPP, Clash Meta, sing-box, v2ray, WireGuard). Tuned for Russia (TSPU DPI) and VLESS+Reality over TCP.
+description: Harden Windows 11 network stack and prevent IP leaks when using a proxy/VPN client (HAPP, Clash, sing-box, v2ray). Disables WebRTC/STUN/TURN/mDNS/QUIC leaks, fully disables IPv6, tunes TCP stack, blocks telemetry, sets MTU 1380 for VLESS+Reality tunnels, and creates a watcher task. Includes a full leak audit. Use when a user wants to prevent IP/DNS/WebRTC leaks, harden Windows network settings, or audit a Windows machine for network leaks.
+compatibility: Windows 10/11, PowerShell 5.1+ (run as Administrator). Requires a proxy/VPN client with a TUN interface (HAPP, Clash Meta, sing-box, v2ray, WireGuard). Tuned for VLESS+Reality over TCP.
 metadata:
   author: derived-from-real-session
   version: "1.0"
   language: ru
 ---
 
-# Windows Russia Anti-DPI & Leak Hardening
+# Windows Network Leak Hardening
 
-Этот скилл — выжимка из реальной сессии настройки Windows 11 для обхода ТСПУ (DPI) в России через клиент HAPP (Mihomo/sing-box) + Marzban (Xray VLESS+Reality) VPS. Применим к любому Windows-ПК с TUN-клиентом (HAPP, Clash, sing-box, v2ray, WireGuard).
+Этот скилл — выжимка из реальной сессии настройки сетевого стека Windows 11 для использования с прокси/VPN клиентами (HAPP, Clash, sing-box, v2ray, WireGuard) + VPS с VLESS+Reality. Применим к любому Windows-ПК с TUN-клиентом.
 
 ## ВАЖНО — что нужно знать агенту перед началом
 
@@ -80,7 +80,7 @@ powershell -ExecutionPolicy Bypass -File scripts/final-audit.ps1
 ```
 17 категорий проверок: файрвол, правила блокировки, listening порты, LLMNR/IPv6, IPv6-туннели, DNS, прокси, активные STUN/TURN, hosts, туннель, MTU, QUIC, TCP стек, TTL, службы телеметрии, watcher task, внешний IP. Цель: 0 FAIL.
 
-## Типичные значения для России / VLESS+Reality
+## Типичные значения для VLESS+Reality
 
 | Параметр | Значение | Почему |
 |---|---|---|
@@ -89,7 +89,7 @@ powershell -ExecutionPolicy Bypass -File scripts/final-audit.ps1
 | QUIC | полностью off | QUIC (UDP 443) нестабилен через прокси и создаёт утечки |
 | IPv6 | полностью off | IPv6 часто обходит TUN и создаёт утечки реального IP |
 | LLMNR/NBT-NS/mDNS | off | Локальное обнаружение = утечка имени хоста/сети |
-| TCP Fast Open | off | Мешает DPI-обходу, создаёт fingerprint |
+| TCP Fast Open | off | Может мешать прокси-туннелированию, создаёт fingerprint |
 
 ## Проверка вручную (в браузере)
 
