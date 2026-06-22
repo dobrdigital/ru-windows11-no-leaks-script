@@ -1,5 +1,7 @@
 # Windows 11 No-Leaks Script
 
+**Русская документация ниже**
+
 PowerShell scripts for hardening Windows 11 network stack and preventing IP leaks.
 
 > **WARNING.** Run at your own risk. Create a restore point first. **Run as Administrator!**
@@ -36,8 +38,6 @@ PowerShell scripts for hardening Windows 11 network stack and preventing IP leak
 ## License: MIT
 
 ---
-
-**Русская документация ниже**
 
 Набор PowerShell скриптов для настройки сетевого стека Windows 11 для обхода утечек IP
 
