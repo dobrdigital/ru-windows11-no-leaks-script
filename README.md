@@ -1,6 +1,6 @@
 # Windows 11 No-Leaks Script
 
-**Русская документация ниже**
+<b><span style='color:#E0E0E0'>Русская</span> <span style='color:#0039A6'>документация</span> <span style='color:#D52B1E'>ниже</span></b>
 
 PowerShell scripts for hardening Windows 11 network stack and preventing IP leaks.
 
@@ -39,7 +39,7 @@ PowerShell scripts for hardening Windows 11 network stack and preventing IP leak
 
 ---
 
-Набор PowerShell скриптов для настройки сетевого стека Windows 11 для обхода утечек IP
+Набор PowerShell скриптов для настройки сетевого стека Windows 11 для обхода утечек 
 
 ## Что делает
 
